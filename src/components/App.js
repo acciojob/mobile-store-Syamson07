@@ -1,13 +1,22 @@
+import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
+import ProductList from "./components/ProductList";
+import ProductDetails from "./components/ProductDetails";
+import AdminPanel from "./components/AdminPanel";
 
-import React from "react";
-import './../styles/App.css';
-
-const App = () => {
+function App() {
   return (
-    <div>
-        {/* Do not remove the main div */}
-    </div>
-  )
+    <Router>
+      <nav>
+        <Link to="/">Home</Link> | 
+        <Link to="/admin">Admin Panel</Link>
+      </nav>
+      <Routes>
+        <Route path="/" element={<ProductList />} />
+        <Route path="/products/:id" element={<ProductDetails />} />
+        <Route path="/admin" element={<AdminPanel />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
