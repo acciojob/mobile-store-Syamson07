@@ -3,10 +3,14 @@ import data from "../data";
 
 export default function AdminPanel() {
   const [products, setProducts] = useState(data);
-  const [form, setForm] = useState({ name: "", description: "", price: "", image: "" });
+  const [form, setForm] = useState({ name: "", description: "", image: "", price: "" });
 
   const handleDelete = (id) => {
     setProducts(products.filter((p) => p.id !== id));
+  };
+
+  const handleEdit = (id, value) => {
+    setProducts(products.map((p) => p.id === id ? { ...p, price: value } : p));
   };
 
   const handleAdd = () => {
@@ -16,13 +20,7 @@ export default function AdminPanel() {
       price: Number(form.price)
     };
     setProducts([...products, newProduct]);
-    setForm({ name: "", description: "", price: "", image: "" });
-  };
-
-  const handleEdit = (id, field, value) => {
-    setProducts(
-      products.map((p) => (p.id === id ? { ...p, [field]: value } : p))
-    );
+    setForm({ name: "", description: "", image: "", price: "" });
   };
 
   return (
@@ -31,17 +29,13 @@ export default function AdminPanel() {
       {products.map((product, idx) => (
         <div key={product.id}>
           <img src={product.image} alt={product.name} width="80" />
+          <p>{product.name}</p>
           <input
             className="form-control"
             value={product.price}
-            onChange={(e) => handleEdit(product.id, "price", e.target.value)}
+            onChange={(e) => handleEdit(product.id, e.target.value)}
           />
-          <button
-            className="float-right"
-            onClick={() => handleDelete(product.id)}
-          >
-            Delete
-          </button>
+          <button className="float-right" onClick={() => handleDelete(product.id)}>Delete</button>
         </div>
       ))}
       <hr />
