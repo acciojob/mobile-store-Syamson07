@@ -1,73 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const initialProducts = [
-  { id: 1, name: "iPhone 13", price: 79999, image: "https://via.placeholder.com/150", description: "Apple flagship" },
-  { id: 2, name: "Samsung S22", price: 69999, image: "https://via.placeholder.com/150", description: "Samsung flagship" },
-  { id: 3, name: "Pixel 7", price: 59999, image: "https://via.placeholder.com/150", description: "Google Pixel" },
-  { id: 4, name: "OnePlus 10", price: 49999, image: "https://via.placeholder.com/150", description: "Fast and smooth" },
-  { id: 5, name: "Realme GT", price: 32999, image: "https://via.placeholder.com/150", description: "Affordable performance" },
-  { id: 6, name: "Xiaomi 12", price: 45999, image: "https://via.placeholder.com/150", description: "Xiaomi’s best" },
-  { id: 7, name: "iQOO 9", price: 39999, image: "https://via.placeholder.com/150", description: "Gaming phone" },
-  { id: 8, name: "Motorola Edge", price: 36999, image: "https://via.placeholder.com/150", description: "Stock Android" },
+  { id: 1, name: "iPhone 14", price: "$999", description: "Apple flagship phone.", image: "https://placehold.co/300x200" },
+  { id: 2, name: "Samsung S22", price: "$899", description: "Samsung flagship phone.", image: "https://placehold.co/300x200" },
 ];
 
-function AdminPanel() {
-  const [products, setProducts] = useState([]);
-  const [newProduct, setNewProduct] = useState({ name: "", price: "", image: "", description: "" });
-
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem("products")) || initialProducts;
-    setProducts(saved);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("products", JSON.stringify(products));
-  }, [products]);
-
-  const handleDelete = id => {
-    setProducts(products.filter(p => p.id !== id));
-  };
+const AdminPanel = () => {
+  const [products, setProducts] = useState(initialProducts);
+  const [form, setForm] = useState({ name: "", price: "", description: "", image: "" });
+  const navigate = useNavigate();
 
   const handleAdd = () => {
-    const nextId = Math.max(...products.map(p => p.id)) + 1;
-    setProducts([...products, { ...newProduct, id: nextId, price: parseInt(newProduct.price) }]);
-    setNewProduct({ name: "", price: "", image: "", description: "" });
+    const newProduct = { ...form, id: Date.now() };
+    setProducts([...products, newProduct]);
   };
 
-  const handleEditPrice = (id, newPrice) => {
-    setProducts(products.map(p => (p.id === id ? { ...p, price: parseInt(newPrice) } : p)));
+  const handleDelete = (id) => {
+    setProducts(products.filter((product) => product.id !== id));
+  };
+
+  const handleEdit = (id) => {
+    const updated = products.map((p) => p.id === id ? { ...p, price: prompt("New price:", p.price) } : p);
+    setProducts(updated);
   };
 
   return (
-    <div className="container">
+    <div>
       <h2>Admin Panel</h2>
       <div>
-        <input className="form-control" placeholder="Name" value={newProduct.name} onChange={e => setNewProduct({ ...newProduct, name: e.target.value })} />
-        <input className="form-control" placeholder="Price" value={newProduct.price} onChange={e => setNewProduct({ ...newProduct, price: e.target.value })} />
-        <input className="form-control" placeholder="Image URL" value={newProduct.image} onChange={e => setNewProduct({ ...newProduct, image: e.target.value })} />
-        <input className="form-control" placeholder="Description" value={newProduct.description} onChange={e => setNewProduct({ ...newProduct, description: e.target.value })} />
+        <input className="form-control" placeholder="Name" onChange={(e) => setForm({ ...form, name: e.target.value })} />
+        <input className="form-control" placeholder="Description" onChange={(e) => setForm({ ...form, description: e.target.value })} />
+        <input className="form-control" placeholder="Image URL" onChange={(e) => setForm({ ...form, image: e.target.value })} />
+        <input className="form-control" placeholder="Price" onChange={(e) => setForm({ ...form, price: e.target.value })} />
         <button onClick={handleAdd}>Add</button>
       </div>
-      {products.map((p, index) => (
-        <div className="col-12" key={p.id}>
-          <div>
-            <a href={`/products/${p.id}`}>
-              <div className="row">
-                <h4>{p.name}</h4>
-                <p>₹{p.price}</p>
-              </div>
-            </a>
-            <input
-              className="form-control"
-              value={p.price}
-              onChange={e => handleEditPrice(p.id, e.target.value)}
-            />
-            <button className="float-right" onClick={() => handleDelete(p.id)}>Delete</button>
+      <div>
+        {products.map((product) => (
+          <div className="product" key={product.id}>
+            <a className="product-link" onClick={() => navigate(`/products/${product.id}`)}>{product.name}</a>
+            <button className="float-right" onClick={() => handleDelete(product.id)}>Delete</button>
+            <button className="float-right" onClick={() => handleEdit(product.id)}>Edit</button>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
-}
+};
 
 export default AdminPanel;
