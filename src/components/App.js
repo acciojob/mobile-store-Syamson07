@@ -4,14 +4,11 @@ import ProductList from "./ProductList";
 import ProductDetails from "./ProductDetails";
 import AdminPanel from "./AdminPanel";
 
-function App() {
+const App = () => {
   return (
     <Router>
       <nav>
-        <ul>
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/admin">Admin Panel</Link></li>
-        </ul>
+        <Link to="/">Home</Link> | <Link to="/admin">Admin Panel</Link>
       </nav>
       <Routes>
         <Route path="/" element={<ProductList />} />
@@ -20,6 +17,6 @@ function App() {
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;
