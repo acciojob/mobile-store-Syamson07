@@ -1,16 +1,18 @@
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import ProductList from "./components/ProductList";
-import ProductDetails from "./components/ProductDetails";
-import AdminPanel from "./components/AdminPanel";
+import ProductList from "./ProductList";
+import ProductDetails from "./ProductDetails";
+import AdminPanel from "./AdminPanel";
 
 function App() {
   return (
     <Router>
       <nav>
-        <Link to="/">Home</Link> |{" "}
-        <Link to="/admin">Admin Panel</Link>
+        <ul>
+          <li><Link to="/">Home</Link></li>
+          <li><Link to="/admin">Admin Panel</Link></li>
+        </ul>
       </nav>
-
       <Routes>
         <Route path="/" element={<ProductList />} />
         <Route path="/products/:id" element={<ProductDetails />} />
